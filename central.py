@@ -39,15 +39,15 @@ y = np.arange(-ylim,ylim+dx, dx)
 X, Y = np.meshgrid(x,y)
 R1 = np.sqrt((X-x1)**2+Y**2)
 R2 = np.sqrt((X-x2)**2+Y**2)
-R1[R1 < 0.1] = 0.1
-R2[R2 < 0.1] =0.1
+R1[R1 < 0.001] = 0.001
+R2[R2 < 0.001] =0.001
 V1 = k*q1/R1
 V2 = k*q2/R2
 V = V1 + V2
-Ex1 = -k*q1*(X-x1)*R1**(-3)
-Ey1 = -k*q1*Y*R1**(-3)
-Ex2 = -k*q2*(X-x2)*R2**(-3)
-Ey2 = -k*q2*Y*R2**(-3)
+Ex1 = k*q1*(X-x1)*R1**(-3)
+Ey1 = k*q1*Y*R1**(-3)
+Ex2 = k*q2*(X-x2)*R2**(-3)
+Ey2 = k*q2*Y*R2**(-3)
 Ex = Ex1 + Ex2
 Ey = Ey1 + Ey2
 E = np.sqrt(Ex**2 + Ey**2)
@@ -55,21 +55,21 @@ Emax = np.percentile(E, 99)
 mask = E > Emax
 Ex[mask] = np.nan
 Ey[mask] = np.nan
+print(V1,V2)
 
 #plotting
 fig, ax = plt.subplots(figsize=(6,5))  
 
 cf = ax.contourf(X, Y, V, levels=100, cmap='coolwarm')
 plt.colorbar(cf, ax=ax, label="Electric Potential (V)")
-ax.scatter([x1, x2], [0,0], color=['blue','red'], s=80)
 ax.axis('equal')
 ax.set_xlabel("x (m)")
 ax.set_ylabel("y (m)")
-ax.set_title("Electric Potential + Field")
+ax.set_title("Electric Potential")
 plt.savefig('potential.png')
-
 q = ax.quiver(Xquiv, Yquiv, Exq, Eyq, scale=1.8e-5, color='black')
 ax.quiverkey(q, .9, -.1,1.1e-6,r'$E = 10^{-6} V/m$',labelpos='W')
+ax.set_title("Electric Potential + Field")
 plt.savefig('efield.png')
 
 
